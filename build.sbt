@@ -9,10 +9,22 @@ lazy val akkaVersion = "2.6.19"
 // sbt tasks, consider https://github.com/spray/sbt-revolver/
 fork := true
 
-enablePlugins(JavaAppPackaging)
 mappings in (Compile, packageDoc) := Seq()
 
-lazy val root = (project in file(".")).settings(
+lazy val DB_HOST=sys.env.get("POSTGRESQL_ADDON_HOST").getOrElse("localhost")
+lazy val DB_PORT=sys.env.get("POSTGRESQL_ADDON_PORT").getOrElse("5432")
+lazy val DB_NAME=sys.env.get("POSTGRESQL_ADDON_DB").getOrElse("postgres")
+lazy val DB_USER=sys.env.get("POSTGRESQL_ADDON_USER").getOrElse("login")
+lazy val DB_PASS=sys.env.get("POSTGRESQL_ADDON_PASSWORD").getOrElse("pass")
+
+flywayUrl := s"jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}"
+flywayUser := DB_USER
+flywayPassword := DB_PASS
+
+lazy val root = (project in file("."))
+  .enablePlugins(JavaAppPackaging)
+  .enablePlugins(FlywayPlugin)
+  .settings(
   inThisBuild(
     List(organization := "com.clevercloud", scalaVersion := "2.13.4")
   ),
@@ -30,6 +42,5 @@ lazy val root = (project in file(".")).settings(
     "org.tpolecat" %% "doobie-core" % "1.0.0-RC1",
     // And add any of these as needed
     "org.tpolecat" %% "doobie-postgres" % "1.0.0-RC1", // Postgres driver 42.3.1 + type mappings.
-    "org.flywaydb" % "flyway-core" % "7.2.0"
   )
 )

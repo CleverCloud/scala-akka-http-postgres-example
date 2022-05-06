@@ -30,9 +30,7 @@ object UserRegistry {
   final case class ActionPerformed(description: String)
 
   def apply(pgConfig: PostgresConfig): Behavior[Command] = {
-    val xa = transactor(pgConfig)
-    dbCreatePublicRegistry(xa)
-    registry(xa)
+    registry(transactor(pgConfig))
   }
 
   type Transactor = doobie.Transactor.Aux[IO, Unit]
@@ -40,21 +38,6 @@ object UserRegistry {
     Transactor.fromDriverManager[IO](
       "org.postgresql.Driver", pgConfig.url, pgConfig.user, pgConfig.pass
     )
-  }
-
-  def dbCreatePublicRegistry(xa: Transactor): Unit = {
-    sql"""
-    CREATE TABLE IF NOT EXISTS user_registry (
-      id serial PRIMARY KEY,
-      name VARCHAR ( 255 ) UNIQUE NOT NULL,
-      age INT NOT NULL,
-      country VARCHAR ( 255 ) NOT NULL
-    )
-    """.
-    update.
-    run.
-    transact(xa).
-    unsafeRunSync
   }
 
   def dbGetUsers(xa: Transactor): Users = {
