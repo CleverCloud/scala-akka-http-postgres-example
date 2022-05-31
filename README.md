@@ -26,6 +26,10 @@ You can edit parameters for
 The program uses [Flyway sbt plugin](https://github.com/flyway/flyway-sbt) in order to create the database table automatically.
 It requires a hook run before the program starts. Just set in the application environment the variable `CC_PRE_RUN_HOOK` with the value `sbt flywayMigrate`
 
+# Sentry 
+
+This program can be connected to Sentry, it only requires two environment variable `SENTRY_AUTH_TOKEN` and `Sentry_DSN`. This will send to Sentry only the server started logs (success or failure).
+
 # Installation
 To install it, simply fork this repository and create an application from your GitHub repo. Then create a PostgreSQL add-on and link it to your application, either via the Clever Tools CLI or via the Clever Cloud console.
 

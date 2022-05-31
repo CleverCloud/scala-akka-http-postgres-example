@@ -38,6 +38,7 @@ lazy val root = (project in file("."))
     "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test,
     "com.typesafe.akka" %% "akka-actor-testkit-typed" % akkaVersion % Test,
     "org.scalatest" %% "scalatest" % "3.1.4" % Test,
+    "io.sentry" % "sentry" % "1.7.23",
     // Start with this one
     "org.tpolecat" %% "doobie-core" % "1.0.0-RC1",
     // And add any of these as needed
